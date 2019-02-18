@@ -12,8 +12,8 @@ class LessonContentImporter
 
   def import
     lesson.update(content: content_converted_to_html) if content_needs_updated?
-  rescue Octokit::Error => errors
-    failed_to_import_message
+  rescue Octokit::Error => error
+    failed_to_import_message(error.message)
   end
 
   private
@@ -34,8 +34,8 @@ class LessonContentImporter
     Octokit.contents(repo, path: lesson.url)
   end
 
-  def failed_to_import_message
-    Rails.logger.error "Failed to import \"#{lesson.title}\" content: #{lesson.errors}"
+  def failed_to_import_message(message)
+    Rails.logger.error "Failed to import \"#{lesson.title}\" content: #{message}"
     false
   end
 
